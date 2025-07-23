@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CashFlowController;
+use App\Http\Controllers\InventoriController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,5 +16,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('dashboard');
 });
+
+
+
+Route::resource('/cash-flows', CashFlowController::class)->only(['index', 'create', 'store']);
+Route::resource('/inventories', InventoriController::class)->only(['index', 'create', 'store', 'edit', 'update']);
+Route::get('/kas', [KasController::class, 'index'])->name('kas.index');
