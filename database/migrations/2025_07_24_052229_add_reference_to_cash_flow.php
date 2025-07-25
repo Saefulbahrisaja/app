@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('inventoris', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+        Schema::table('cash_flow', function (Blueprint $table) {
+            $table->nullableMorphs('ref');
         });
     }
 
@@ -22,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('inventoris');
+        Schema::table('cash_flow', function (Blueprint $table) {
+            //
+        });
     }
 };

@@ -41,7 +41,7 @@ class CashFlowController extends Controller
         ]);
 
         CashFlow::create([
-            'user_id' => auth()->id(),
+            'user_id' => 1,//auth()->id(),
             'type' => $request->type,
             'kategori' => $request->kategori,
             'jumlah' => $request->jumlah,

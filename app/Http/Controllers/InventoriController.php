@@ -6,12 +6,14 @@ use App\Models\Inventori;
 use Illuminate\Http\Request;
 
 
+
 class InventoriController extends Controller
 {
     public function index()
     {
         $bahanBaku = Inventori::where('jenis', 'bahan_baku')->get();
         $barangJadi = Inventori::where('jenis', 'barang_jadi')->get();
+
         return view('inventori.index', compact('bahanBaku', 'barangJadi'));
     }
 
@@ -30,17 +32,17 @@ class InventoriController extends Controller
             'harga_satuan' => 'nullable|numeric',
         ]);
 
-        Inventory::create($request->all());
+        Inventori::create($request->all());
 
-        return redirect()->route('inventori.index')->with('success', 'Data inventaris ditambahkan.');
+        return redirect()->route('inventories.index')->with('success', 'Data inventaris ditambahkan.');
     }
 
-    public function edit(Inventory $inventory)
+    public function edit(Inventori $inventory)
     {
-        return view('inventori.edit', compact('inventory'));
+        return view('inventories.edit', compact('inventory'));
     }
 
-    public function update(Request $request, Inventory $inventory)
+    public function update(Request $request, Inventori $inventory)
     {
         $request->validate([
             'nama_barang' => 'required|string',

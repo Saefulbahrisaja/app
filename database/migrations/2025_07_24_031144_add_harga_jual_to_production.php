@@ -11,10 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('cash_flows', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
+        Schema::table('production', function (Blueprint $table) {
+    $table->decimal('harga_jual', 15, 2)->nullable();
+});
     }
 
     /**
@@ -22,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('cash_flows');
+        Schema::table('production', function (Blueprint $table) {
+            //
+        });
     }
 };
