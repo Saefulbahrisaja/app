@@ -37,11 +37,11 @@
             <div x-show="open"
                 class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50"
                 x-cloak>
-                <!-- Modal Box -->
-                <div @click.away="open = false" class="bg-white w-full max-w-lg rounded-lg shadow-lg p-6">
-                    <h3 class="text-lg font-semibold mb-4 text-gray-700">Tambah Produksi</h3>
+            <!-- Modal Box -->
+            <div @click.away="open = false" class="bg-white w-full max-w-lg rounded-lg shadow-lg flex flex-col max-h-[90vh]">
+                <h3 class="text-lg font-semibold p-6 pb-4 text-gray-700 border-b">Tambah Produksi</h3>
 
-                    <form action="{{ route('production.store') }}" method="POST" class="space-y-4">
+                <form action="{{ route('production.store') }}" method="POST" class="flex-1 overflow-y-auto p-6 pt-4 space-y-4">
                         @csrf
                         <div>
                             <label for="tanggal" class="block text-sm font-medium text-gray-600">Tanggal</label>
@@ -127,8 +127,6 @@
                 </div>
             </div>
         </div>
-       
-        
     </div>
 
     <div class="overflow-x-auto rounded">
