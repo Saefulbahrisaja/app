@@ -37,22 +37,16 @@ class InventoriController extends Controller
         return redirect()->route('inventories.index')->with('success', 'Data inventaris ditambahkan.');
     }
 
-    public function edit(Inventori $inventory)
+    public function destroy(Request $request, $id)
     {
         return view('inventories.edit', compact('inventory'));
     }
 
-    public function update(Request $request, Inventori $inventory)
+    public function update(Request $request, $id)
     {
-        $request->validate([
-            'nama_barang' => 'required|string',
-            'stok' => 'required|integer|min:0',
-            'satuan' => 'required|string',
-            'harga_satuan' => 'nullable|numeric',
-        ]);
+        $inventory = Inventori::findOrFail($id);
+        $inventory->update($request->only(['nama_barang', 'stok', 'satuan', 'harga_satuan']));
 
-        $inventory->update($request->all());
-
-        return redirect()->route('inventori.index')->with('success', 'Inventaris berhasil diperbarui.');
+        return response()->json(['status' => 'success']);
     }
 }

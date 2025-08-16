@@ -41,7 +41,7 @@ class CashFlowController extends Controller
         ]);
 
         CashFlow::create([
-            'user_id' => 1,//auth()->id(),
+            'user_id' => auth()->id(),
             'type' => $request->type,
             'kategori' => $request->kategori,
             'jumlah' => $request->jumlah,
@@ -50,5 +50,33 @@ class CashFlowController extends Controller
         ]);
 
         return redirect()->route('cash-flows.index')->with('success', 'Transaksi berhasil ditambahkan.');
+    }
+
+    public function save(Request $request)
+        {
+            try {
+            $type = $request->input('type');
+            $category = $request->input('category');
+            $amount = $request->input('amount');
+            $description = $request->input('description');
+            $reference = $request->input('reference');
+
+            CashFlow::create([
+                'type' => $type,
+                'user_id' =>auth()->id(),
+                'kategori' => $category,
+                'jumlah' => $amount,
+                'keterangan' => $description,
+                'ref_type' => $reference,
+                'tanggal' => now(),
+            ]);
+
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 }

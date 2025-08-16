@@ -2,19 +2,20 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
-
-class User extends Model
+class User extends Authenticatable
 {
-    use HasFactory;
-    protected $table = 'user';
+    use Notifiable;
+
+    protected $table = 'user'; // Nama tabel custom
+
     protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'role', // Tambahkan kolom role jika ada    
+        'name', 'email', 'password', 'role'
+    ];
+
+    protected $hidden = [
+        'password', 'remember_token',
     ];
 }

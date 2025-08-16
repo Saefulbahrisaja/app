@@ -8,6 +8,7 @@ use App\Models\ProductionDetail;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\CashFlow;
+use App\Models\MarkupSetting;
 
 
 class ProductionController extends Controller
@@ -25,7 +26,10 @@ class ProductionController extends Controller
         ->whereBetween('tanggal', [$start, $end])
         ->orderBy('tanggal', 'desc')
         ->get();
-    $bahanBaku = Inventori::where('jenis', 'bahan_baku')->get();
+    $bahanBaku = Inventori::where('jenis', 'bahan_baku')
+        ->where('stok', '>', 0)
+        ->get();
+
 
     return view('produksi.index', compact('productions', 'bahanBaku','start', 'end'));
     }
@@ -100,7 +104,7 @@ class ProductionController extends Controller
             // 🧾 Pengeluaran untuk bahan baku
             if ($total_bahan > 0) {
                 CashFlow::create([
-                    'user_id' => 1,//auth()->id(),
+                    'user_id' => auth()->id(),
                     'type' => 'keluar',
                     'kategori' => 'Bahan Baku (' . $request->produk. ' )',
                     'jumlah' => $total_bahan,
@@ -114,7 +118,7 @@ class ProductionController extends Controller
             // 👷‍♂️ Pengeluaran untuk tenaga kerja
             if ($produksi->biaya_tenaga_kerja > 0) {
                 CashFlow::create([
-                    'user_id' => 1,//auth()->id(),
+                    'user_id' => auth()->id(),
                     'type' => 'keluar',
                     'kategori' => 'Tenaga Kerja (' . $request->produk. ' )',
                     'jumlah' => $produksi->biaya_tenaga_kerja,
@@ -128,7 +132,7 @@ class ProductionController extends Controller
             // 🏭 Pengeluaran untuk overhead
             if ($produksi->biaya_overhead > 0) {
                 CashFlow::create([
-                    'user_id' => 1,//auth()->id(),
+                    'user_id' => auth()->id(),
                     'type' => 'keluar',
                     'kategori' => 'Overhead (' . $request->produk . ' )',
                     'jumlah' => $produksi->biaya_overhead,
@@ -150,8 +154,10 @@ class ProductionController extends Controller
             $produksi->save();
 
             // Hitung harga jual dengan markup 10% dari HPP
-            $hargaJual = $hpp * 1.10;
-            $pembulatanharga=round($hargaJual); 
+            $markup = MarkupSetting::first()->percentage ?? 10;
+            $hargaJual = $hpp * (1 + ($markup / 100));
+
+            $pembulatanharga=round($hargaJual,2); 
             
             // Update harga_satuan di tabel inventori untuk barang jadi
             $barangJadi->update(['harga_satuan' => $pembulatanharga]);
