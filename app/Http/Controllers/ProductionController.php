@@ -51,7 +51,7 @@ class ProductionController extends Controller
             'produk' => 'required|string',
             'jumlah_produksi' => 'required|integer|min:1',
             'bahan_baku' => 'required|array', // array of inventory_id => jumlah
-            'bahan_baku.*' => 'required|integer|min:1',
+            'bahan_baku.*' => 'required|integer|min:0',
             'biaya_tenaga_kerja' => 'nullable|numeric',
             'biaya_overhead' => 'nullable|numeric',
         ]);
@@ -148,6 +148,16 @@ class ProductionController extends Controller
 
             $produksi->hpp_per_unit = $hpp;
             $produksi->save();
+
+            // Hitung harga jual dengan markup 10% dari HPP
+            $hargaJual = $hpp * 1.10;
+            $pembulatanharga=round($hargaJual); 
+            
+            // Update harga_satuan di tabel inventori untuk barang jadi
+            $barangJadi->update(['harga_satuan' => $pembulatanharga]);
+            
+            // Simpan harga jual di tabel production
+            $produksi->update(['harga_jual' => $pembulatanharga]);
 
     
         });

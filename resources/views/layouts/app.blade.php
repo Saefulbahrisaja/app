@@ -113,21 +113,18 @@
                     </svg>
                 </button>
                 <div x-show="open" class="mt-2 space-y-2 pl-6" x-cloak>
-                    <a href="" class="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-gray-200 {{ request()->routeIs('laporan.kehadiran') ? 'bg-gray-200 font-semibold' : '' }}">
+                    <a href="{{ route('laporan.kas') }}" class="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-gray-200 {{ request()->routeIs('laporan.kehadiran') ? 'bg-gray-200 font-semibold' : '' }}">
                         <i data-lucide="clipboard-list" class="w-4 h-4"></i>
                         Laporan Kas (CashFlow)
                     </a>
-                    <a href="" class="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-gray-200 {{ request()->routeIs('laporan.kpi') ? 'bg-gray-200 font-semibold' : '' }}">
+                    <a href="{{ route('laporan.inventori') }}" class="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-gray-200 {{ request()->routeIs('laporan.kpi') ? 'bg-gray-200 font-semibold' : '' }}">
                         <i data-lucide="boxes" class="w-4 h-4"></i>
                         Laporan Inventori
                     </a>
-                    <a href="" class="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-gray-200 {{ request()->routeIs('laporan.kpi') ? 'bg-gray-200 font-semibold' : '' }}">
-                        <i data-lucide="factory" class="w-4 h-4"></i>
-                        Laporan Produksi
-                    </a>
-                    <a href="" class="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-gray-200 {{ request()->routeIs('laporan.kpi') ? 'bg-gray-200 font-semibold' : '' }}">
+                   
+                    <a href="{{ route('laba_rugi.index') }}" class="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-gray-200 {{ request()->routeIs('laporan.kpi') ? 'bg-gray-200 font-semibold' : '' }}">
                         <i data-lucide="dollar-sign" class="w-4 h-4"></i>
-                        Laporan HPP
+                        Laporan Laba/Rugi
                     </a>
                 </div>
             </div>

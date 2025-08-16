@@ -12,4 +12,9 @@ class Inventori extends Model
     protected $fillable = [
         'nama_barang', 'jenis', 'stok', 'satuan', 'harga_satuan'
     ];
+
+    public function detailPenjualan()
+    {
+        return $this->hasMany(DetailPenjualan::class);
+    }
 }

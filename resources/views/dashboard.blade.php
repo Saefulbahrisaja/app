@@ -9,7 +9,8 @@
 		<div class="bg-white rounded-lg shadow p-5 flex flex-col items-center">
 			<span class="text-gray-500 text-sm mb-2">Saldo</span>
 			<span class="text-2xl font-bold text-blue-600">
-				Rp {{ number_format($kasMasuk - $kasKeluar, 0, ',', '.') }}
+				Rp {{ 
+                    number_format($kasMasuk - $kasKeluar, 0, ',', '.') }}
 			</span>
 		</div>
 		<div class="bg-white rounded-lg shadow p-5 flex flex-col items-center">
