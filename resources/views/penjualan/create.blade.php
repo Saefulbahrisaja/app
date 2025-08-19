@@ -10,7 +10,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- AlpineJS -->
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-    <!-- DataTables CSS & JS -->
+    <!-- DataTables CSS & JS (optional) -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
@@ -62,19 +62,17 @@
             animation: spin 1s linear infinite;
         }
         @keyframes spin {
-            0% { transform: rotate(0deg);}
-            100% { transform: rotate(360deg);}
+            0% { transform: rotate(0deg);} 
+            100% { transform: rotate(360deg);} 
         }
-        .hidden {
-            opacity: 0;
-            visibility: hidden;
-        }
+        /* FIX: jangan override .hidden Tailwind */
+        .is-hidden { opacity: 0; visibility: hidden; pointer-events: none; }
     </style>
 </head>
 <body class="bg-gray-50" x-data="{ showLockModal: false }">
     <!-- Loading Overlay -->
     <div id="loader-overlay" class="loader-overlay">
-        <div class="loader"></div>
+        <div class="loader" aria-label="Memuat..."></div>
     </div>
 
     <!-- Header Section -->
@@ -94,11 +92,11 @@
                     </div>
 
                     <button @click="
-                    fetch('{{ route('logout') }}', {
-                        method: 'POST',
-                        headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' }
-                    }).then(() => showLockModal = true);
-                " class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded flex items-center">
+                        fetch('{{ route('logout') }}', {
+                            method: 'POST',
+                            headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' }
+                        }).then(() => showLockModal = true);
+                    " class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded flex items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                                 d="M12 11c.5304 0 1.0391.2107 1.4142.5858C13.7893 11.9609 14 12.4696 14 13v3H10v-3c0-.5304.2107-1.0391.5858-1.4142C10.9609 11.2107 11.4696 11 12 11z" />
@@ -116,7 +114,7 @@
     <!-- Main Content -->
     <main class="container mx-auto px-4 py-8">
         <!-- Product Selection Card -->
-        <div class="bg-white rounded-xl shadow-sm mb-12 ">
+        <div class="bg-white rounded-xl shadow-sm mb-12">
             <div class="p-3">
                 <div class="grid grid-cols-[3fr_1fr_1fr] gap-3">
                     <div>
@@ -136,7 +134,7 @@
                                 <template x-for="product in filteredProducts" :key="product.produk">
                                     <div @click="selectProduct(product)" 
                                          class="px-4 py-2 hover:bg-blue-50 cursor-pointer transition-colors duration-200">
-                                        <span x-text="product.produk + ' - Rp ' + formatRupiah(product.harga_jual)"></span>
+                                        <span x-text="product.produk + ' - ' + formatRupiah(product.harga_jual)"></span>
                                         <span class="text-xs text-gray-500 ml-2" x-text="'Stok: ' + product.stok"></span>
                                     </div>
                                 </template>
@@ -150,14 +148,14 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Jumlah</label>
-                        <input type="number" id="jumlahInput" maxlength="3" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" min="1" placeholder="Jumlah max 999">
+                        <input type="number" id="jumlahInput" max="999" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" min="1" placeholder="Jumlah max 999">
                     </div>
-                        <div class="flex items-end">
-                            <button id="tambahBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-3 rounded-lg transition-all duration-200 hover-scale flex items-center justify-center">
-                                <i data-lucide="plus" class="w-4 h-4 mr-2"></i>
-                                Tambah
-                            </button>
-                        </div>
+                    <div class="flex items-end">
+                        <button id="tambahBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-3 rounded-lg transition-all duration-200 hover-scale flex items-center justify-center">
+                            <i data-lucide="plus" class="w-4 h-4 mr-2"></i>
+                            Tambah
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -188,7 +186,14 @@
                             <p class="text-sm font-medium text-blue-600">Total Penjualan</p>
                             <p class="text-2xl font-bold text-blue-800" id="totalRupiah">Rp 0</p>
                         </div>
-                        
+                        <div class="bg-green-50 p-4 rounded-lg">
+                            <p class="text-sm font-medium text-green-600">Jumlah Item</p>
+                            <p class="text-2xl font-bold text-green-800" id="jumlahItem">0</p>
+                        </div>
+                        <div class="bg-yellow-50 p-4 rounded-lg">
+                            <p class="text-sm font-medium text-yellow-600">Perkiraan Laba</p>
+                            <p class="text-2xl font-bold text-yellow-800" id="labaRupiah">Rp 0</p>
+                        </div>
                     </div>
                 </div>
 
@@ -214,7 +219,8 @@
                     <button type="button" onclick="resetTransaksi()" class="px-6 py-3 bg-gray-500 hover:bg-gray-600 text-white font-semibold rounded-lg transition-all duration-200">
                         Reset
                     </button>
-                    <button type="button" onclick="submitTransaksi()" class="px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-all duration-200 hover-scale flex items-center">
+                    <!-- FIX: kirim elemen tombol sebagai argumen -->
+                    <button type="button" onclick="submitTransaksi(this)" class="px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-all duration-200 hover-scale flex items-center">
                         <i data-lucide="check" class="w-4 h-4 mr-2"></i>
                         Simpan Transaksi
                     </button>
@@ -249,7 +255,8 @@
     <script>
         window.addEventListener('load', () => {
             const loaderOverlay = document.getElementById('loader-overlay');
-            loaderOverlay.classList.add('hidden');
+            // FIX: gunakan .is-hidden (bukan .hidden Tailwind)
+            loaderOverlay.classList.add('is-hidden');
         });
 
         // Initialize Lucide icons
@@ -300,7 +307,8 @@
                 },
                 
                 selectProduct(product) {
-                    this.searchTerm = product.produk + ' - Rp ' + formatRupiah(product.harga_jual);
+                    // FIX: hilangkan 'Rp ' dobel
+                    this.searchTerm = product.produk + ' - ' + formatRupiah(product.harga_jual);
                     this.selectedProduct = product.produk;
                     this.showDropdown = false;
                     
@@ -317,7 +325,7 @@
         const transaksi = [];
 
         function formatRupiah(num) {
-            return 'Rp ' + new Intl.NumberFormat('id-ID').format(num);
+            return 'Rp ' + new Intl.NumberFormat('id-ID').format(num || 0);
         }
 
         function refreshTable() {
@@ -351,12 +359,10 @@
             });
 
             document.getElementById('totalRupiah').innerText = formatRupiah(total);
+            // FIX: elemen kini tersedia di HTML
             document.getElementById('labaRupiah').innerText = formatRupiah(labaTotal);
             document.getElementById('jumlahItem').innerText = itemCount;
 
-            // Re-initialize icons
-
-            
             lucide.createIcons();
         }
 
@@ -395,6 +401,11 @@
             
             if (!hiddenInput.value || !jumlahBaru || jumlahBaru < 1) {
                 alert('Silakan pilih produk dan masukkan jumlah yang valid!');
+                return;
+            }
+
+            if (jumlahBaru > 999) {
+                alert('Jumlah maksimal 999.');
                 return;
             }
 
@@ -444,7 +455,8 @@
 
         document.getElementById('pembayaranInput').addEventListener('input', calculateKembalian);
 
-        function submitTransaksi() {
+        // FIX: terima tombol sebagai parameter, jangan andalkan global 'event'
+        function submitTransaksi(btn) {
             const total = transaksi.reduce((sum, item) => sum + (item.harga * item.jumlah), 0);
             const pembayaran = parseFloat(document.getElementById('pembayaranInput').value);
 
@@ -460,7 +472,6 @@
             const kembalian = pembayaran - total;
             
             // Show loading state
-            const btn = event.target;
             const originalText = btn.innerHTML;
             btn.innerHTML = '<i data-lucide="loader" class="w-4 h-4 mr-2 animate-spin"></i> Menyimpan...';
             btn.disabled = true;
@@ -481,38 +492,39 @@
             .then(res => res.json())
             .then(res => {
                 alert('Transaksi berhasil disimpan!');
-                
+
+                printStruk(res.id, transaksi, total, pembayaran, kembalian);
                 // Simpan laba ke cash flow
                 const labaTotal = transaksi.reduce((sum, item) => sum + ((item.harga - item.hpp) * item.jumlah), 0);
 
                 if (labaTotal > 0) {
-                fetch('{{ route("simpankas.save") }}', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    body: JSON.stringify({
-                        type: 'masuk',
-                        category: 'laba_penjualan',
-                        amount: labaTotal,
-                        description: 'Laba dari penjualan produk',
-                        reference: res.id || 'penjualan_' + Date.now()
+                    fetch('{{ route("simpankas.save") }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({
+                            type: 'masuk',
+                            category: 'laba_penjualan',
+                            amount: labaTotal,
+                            description: 'Laba dari penjualan produk',
+                            reference: res.id || 'penjualan_' + Date.now()
+                        })
                     })
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log('Laba disimpan:', data);
-                })
-                .catch(err => {
-                    console.error('Gagal simpan laba:', err);
-                });
-            }
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('Laba disimpan:', data);
+                    })
+                    .catch(err => {
+                        console.error('Gagal simpan laba:', err);
+                    });
+                }
 
                 transaksi.length = 0;
                 refreshTable();
@@ -525,11 +537,66 @@
                 lucide.createIcons();
             })
             .catch(error => {
-                //alert('Terjadi kesalahan saat menyimpan transaksi!');
+                console.error(error);
                 btn.innerHTML = originalText;
                 btn.disabled = false;
                 lucide.createIcons();
             });
+        }
+
+        function printStruk(noTransaksi, items, total, pembayaran, kembalian) {
+            let html = `
+                <html>
+                <head>
+                    <title>Struk Transaksi</title>
+                    <style>
+                        body { font-family: monospace; font-size: 12px; }
+                        .center { text-align: center; }
+                        .line { border-top: 1px dashed #000; margin: 4px 0; }
+                        table { width: 100%; border-collapse: collapse; }
+                        td { padding: 2px 0; }
+                    </style>
+                </head>
+                <body>
+                    <div class="center">
+                        <h3>KAS PRO</h3>
+                        <p>Sistem Kasir Kas</p>
+                        <p>No. Transaksi: ${noTransaksi}</p>
+                        <div class="line"></div>
+                    </div>
+                    <table>
+                        ${items.map(i => `
+                            <tr>
+                                <td>${i.produk} (${i.jumlah}x)</td>
+                                <td style="text-align:right;">${formatRupiah(i.harga * i.jumlah)}</td>
+                            </tr>
+                        `).join('')}
+                    </table>
+                    <div class="line"></div>
+                    <table>
+                        <tr>
+                            <td>Total</td>
+                            <td style="text-align:right;">${formatRupiah(total)}</td>
+                        </tr>
+                        <tr>
+                            <td>Tunai</td>
+                            <td style="text-align:right;">${formatRupiah(pembayaran)}</td>
+                        </tr>
+                        <tr>
+                            <td>Kembalian</td>
+                            <td style="text-align:right;">${formatRupiah(kembalian)}</td>
+                        </tr>
+                    </table>
+                    <div class="line"></div>
+                    <p class="center">Terima kasih 🙏<br/>Barang yang sudah dibeli tidak dapat dikembalikan.</p>
+                    <script>window.print();<\/script>
+                </body>
+                </html>
+            `;
+
+            let win = window.open('', '', 'width=300,height=600');
+            win.document.write(html);
+            win.document.close();
         }
     </script>
 </body>
